@@ -6,7 +6,7 @@ var farmerArr = [];
 var side = 20;
 
 
-for (let y = 0; y < rows; y++) {
+for (let y = 0; y < 0; y++) {
     matrix[y] = []; 
     for (let x = 0; x < columns; x++) {
         let a = Math.floor(Math.random() * 100);
@@ -127,7 +127,7 @@ function draw() {
     }
     for (let i = 0; i < farmerArr.length; i++) {
         const farmer = farmerArr[i];
-        farmer.eat();
+        farmer.eat3();
         farmer.eat1();
         farmer.eat2();
     }
