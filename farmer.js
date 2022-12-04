@@ -1,105 +1,97 @@
-class Farmer extends Parent{
-    constructor(x, y){
-        super(x, y);
-        this.energy = 10;
+let LivingCreature = require('./parent')
+
+module.exports = class Farmer extends LivingCreature {
+    constructor(x, y) {
+        super(x, y)
+        this.energy = 8
+        this.directions = [];
     }
-    eat3(){
-        let found = this.chooseCell(3);
-        let exact = random(found)
+    getNewCoordinates() {
+        this.directions = [
+            [this.x - 1, this.y - 1],
+            [this.x, this.y - 1],
+            [this.x + 1, this.y - 1],
+            [this.x - 1, this.y],
+            [this.x + 1, this.y],
+            [this.x - 1, this.y + 1],
+            [this.x, this.y + 1],
+            [this.x + 1, this.y + 1]
+        ];
+    }
 
-        if (exact){
-            this.energy +=1;
-            let x = exact[0];
-            let y = exact[1];
+    chooseCell(character, character2) {
+        this.getNewCoordinates()
+        return super.chooseCell(character, character2);
+    }
 
-            for (let i = 0; i < fireArr.length; i++) {
-                if( fireArr[i].x == x && fireArr[i].y == y ){
-                    fireArr.splice(i, 1)
-                }
+    mul() {
+        var emptyCells = this.chooseCell(0);
+        var newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+
+        if (newCell) {
+            var newX = newCell[0];
+            var newY = newCell[1];
+            matrix[newY][newX] = 6;
+
+            var newFarmer = new Farmer(newX, newY);
+            farmerArr.push(newFarmer);
+            this.energy = 8
+        }
+    }
+
+    move() {
+        this.energy--
+        var emptyCells = this.chooseCell(0, 1);
+        var newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+
+        if(newCell && this.energy >= 0) {
+
+            var newX = newCell[0];
+            var newY = newCell[1];
+            if (matrix[newY][newX] == 0) {
+                matrix[newY][newX] = matrix[this.y][this.x]
+                matrix[this.y][this.x] = 0
+                this.x = newX
+                this.y = newY
             }
+                
+        } else {
+            this.die()
+        }
+    }
 
-            matrix[y][x] = 4
-            matrix[this.y][this.x] = 1
-            
-            this.x = x;
-            this.y = y;
-
+    eat() {
+        var emptyCells = this.chooseCell(2, 4);
+        var newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+        if(newCell) {
+            this.energy++
+            var newX = newCell[0];
+            var newY = newCell[1];
+                matrix[newY][newX] = matrix[this.y][this.x]
+                matrix[this.y][this.x] = 0
+                this.x = newX
+                this.y = newY
+                for (var i in grassArr) {
+                    if (newX == grassArr[i].x && newY == grassArr[i].y) {
+                        grassArr.splice(i, 1);
+                        break;
+                    }
+                }
+             
+        if(this.energy >= 10) {
+            this.mul()
+        }
+        }else {
             this.move()
-
         }
     }
-    eat2(){
-        let found = this.chooseCell(2);
-        let exact = random(found)
-
-        if (exact){
-            this.energy +=1;
-            let x = exact[0];
-            let y = exact[1];
-
-            for (let i = 0; i < fireArr.length; i++) {
-                if( fireArr[i].x == x && fireArr[i].y == y ){
-                    fireArr.splice(i, 1)
-                }
+    die() {
+        matrix[this.y][this.x] = 0
+        for (var i in farmerArr) {
+            if (this.x == farmerArr[i].x && this.y == farmerArr[i].y) {
+                farmerArr.splice(i, 1);
+                break;
             }
-
-            matrix[y][x] = 4
-            matrix[this.y][this.x] = 1
-            
-            this.x = x;
-            this.y = y;
-
-            this.move1()
-
         }
     }
-    move(){
-        let found = this.chooseCell(1);
-        let exact = random(found)
-
-        if (exact){
-            let x = exact[0];
-            let y = exact[1];
-
-            matrix[y][x] = 4
-            matrix[this.y][this.x] = 1
-
-            this.x = x;
-            this.y = y;
-
-            this.energy = 20
-
-            if(this.energy < 0){
-            }
-        }else {
-            this.energy = 20
-            if(this.energy < 0){
-            }
-        }    
-    }
-    move1(){
-        let found = this.chooseCell(0);
-        let exact = random(found)
-
-        if (exact){
-            let x = exact[0];
-            let y = exact[1];
-
-            matrix[y][x] = 4
-            matrix[this.y][this.x] = 1
-
-            this.x = x;
-            this.y = y;
-
-            this.energy = 20
-
-            if(this.energy < 0){
-            }
-        }else {
-            this.energy = 20
-            if(this.energy < 0){
-            }
-        }    
-    }
-
 }

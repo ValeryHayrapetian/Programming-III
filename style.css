@@ -1,0 +1,34 @@
+body {
+    background-color: rgb(73, 73, 73);  
+    display: grid; 
+    justify-content: center; 
+}
+
+#title-text {
+    color:rgb(250, 235, 215);
+    text-align: center;
+    margin: 10px 0px 10px 0px;
+}
+
+#canva {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.buttons{
+    display: flex;
+    justify-content: space-around;
+}
+#gameInfo{
+    color: rgb(250, 235, 215);
+    display: grid;
+    align-content: stretch;
+    
+}
+table, th, td {
+    border:1px solid black;
+    
+}
+td{
+    text-align: center;
+}

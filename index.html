@@ -1,19 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.js"></script>
-    <script src="parent.js"></script>
-    <script src="script.js"></script>
-    <script src="grass.js"></script>
-    <script src="grassEater.js"></script>
-    <script src="fire.js"></script>
-    <script src="farmer.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>Programming III</title>
+    <style type = "text/css">
+    .chartBox{
+      width: 600px;
+      height: 600px;
+    }
+    </style>
 </head>
+</html>
 <body>
+    <h1 id="title-text">Game Of LIfe</h1>
+    
+    <div id="canva">
+      <div id="gameInfo">
+      <table>
+        <tr>
+          <td>Name</td>
+          <td>MulTime</td>
+          <td>Eat</td>
+          <td>is Dying?</td>
+        </tr>
+        <tr>
+              <td>Grass</td>
+              <td>4</td>
+              <td>Dirt</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>GrassEater</td>
+              <td>1(default)</td>
+              <td>Grass</td>
+              <td>Tes</td>
+           </tr>
+           <tr>
+             <td>Predator</td>
+             <td>1(default)</td>
+             <td>Everything</td>
+             <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Fire</td>
+              <td>1(default)</td>
+              <td>Grass</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Dirt</td>
+              <td>3</td>
+              <td>Non</td>
+              <td>No</td>
+              </tr>
+             <tr>
+              <td>Farmer</td>
+             <td>1(default)</td>
+             <td>GrassEater & Fire</td>
+             <td>Yes</td>
+            </tr>
+      </table>
+    </div>
+    <div id="game">
+      <script src="socket.io/socket.io.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.js"></script>
+    </div>
+
+     <div style="position: relative; height:600px; width:600px" >
+        <canvas id="myChart"></canvas>
+        <div class = "buttons">
+          <button onclick="updateValue()">Update</button>
+          <button onclick="reload()">Reload Information</button>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+    <script src="https://unpkg.com/chart.js-plugin-labels-dv/dist/chartjs-plugin-labels.min.js">
+    </script>
+    <script>
+        const data = {
+            labels: ['Grass','GrassEater','Predator','Fire','Dirt','Farmer'],
+            datasets: [{
+                label: 'Objects Count',
+                data: [60, 60, 60, 60, 60, 60],
+                backgroundColor: ['Green','Orange','Black','Red','rgb(70, 25, 25)','Darkcyan'],
+                hoverOffset: 4
+            }]
+        };
+        const config = {
+        type: 'pie',
+        data,
+        options: {
+        },
+        };
+
+        const myChart = new Chart(
+          document.getElementById("myChart"),
+          config
+        )
+
+        function reload(){
+          window.location.reload();
+        }
+      
+        function updateValue(){
+          
+          var DATA;
+
+          function getFile (fileName) {
+
+          var request = new XMLHttpRequest();
+
+            request.open('GET', fileName);
+
+            request.onloadend = function() {
+
+            parse(request.responseText);
+          }
+
+            request.send();
+          }
+
+          getFile('../statAnalysis.json');
+
+          function parse(obj) {
+
+            DATA = JSON.parse(obj);
+          
+          myChart.config.data.datasets[0].data[0] = DATA.grass;
+          myChart.config.data.datasets[0].data[1] = DATA.grassEater;
+          myChart.config.data.datasets[0].data[2] = DATA.predator;
+          myChart.config.data.datasets[0].data[3] = DATA.fire;
+          myChart.config.data.datasets[0].data[4] = DATA.dirt;
+          myChart.config.data.datasets[0].data[5] = DATA.farmer;
+          myChart.update();
+          
+          }
+        }
+    </script>
+    
+    <div class="Programming3">
+      <script src="script.js">
+      </script>
+    </div>
+    </div>
     
 </body>
-</html>

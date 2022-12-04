@@ -1,89 +1,97 @@
-class GrassEater extends Parent{
-    constructor(x, y){
-        super(x, y);
-        this.energy = 2;
+let LivingCreature = require('./parent')
+
+module.exports = class GrassEater extends LivingCreature {
+    constructor(x, y) {
+        super(x, y)
+        this.energy = 20
+        this.directions = [];
     }
+    getNewCoordinates() {
+        this.directions = [
+            [this.x - 1, this.y - 1],
+            [this.x, this.y - 1],
+            [this.x + 1, this.y - 1],
+            [this.x - 1, this.y],
+            [this.x + 1, this.y],
+            [this.x - 1, this.y + 1],
+            [this.x, this.y + 1],
+            [this.x + 1, this.y + 1]
+        ];
+    }
+
+    chooseCell(character, character2) {
+        this.getNewCoordinates()
+        return super.chooseCell(character, character2);
+    }
+
     mul() {
-        let found = this.chooseCell(0);
-        let exact = random(found)
+        var emptyCells = this.chooseCell(0);
+        var newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
 
-        if (exact && this.energy > 8) {
-            let x = exact[0];
-            let y = exact[1];
+        if (newCell) {
+            var newX = newCell[0];
+            var newY = newCell[1];
+            matrix[newY][newX] = 2;
 
-            let eater = new GrassEater(x, y);
-            matrix[y][x] = 2;
-            grassEaterArr.push(eater);
-
-            this.energy = 2;
-        } else {
-            console.error('there is no way to multiply');
+            var newGrassEater = new GrassEater(newX, newY);
+            grassEaterArr.push(newGrassEater);
+            this.energy = 20
         }
     }
-    eat(){
-        let found = this.chooseCell(1);
-        let exact = random(found)
 
-        if (exact){
-            this.energy +=1;
-            let x = exact[0];
-            let y = exact[1];
+    move() {
+        this.energy--
+        var emptyCells = this.chooseCell(0, 4);
+        var newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
 
-            for (let i = 0; i < grassArr.length; i++) {
-                if( grassArr[i].x == x && grassArr[i].y == y ){
-                    grassArr.splice(i, 1)
+        if(newCell && this.energy >= 0) {
+
+            var newX = newCell[0];
+            var newY = newCell[1];
+            if (matrix[newY][newX] == 0) {
+                matrix[newY][newX] = matrix[this.y][this.x]
+                matrix[this.y][this.x] = 0
+                this.x = newX
+                this.y = newY
+            }
+                
+        } else {
+            this.die()
+        }
+    }
+
+    eat() {
+        var emptyCells = this.chooseCell(1);
+        var newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+        if(newCell) {
+            this.energy++
+            var newX = newCell[0];
+            var newY = newCell[1];
+                matrix[newY][newX] = matrix[this.y][this.x]
+                matrix[this.y][this.x] = 0
+                this.x = newX
+                this.y = newY
+                for (var i in grassArr) {
+                    if (newX == grassArr[i].x && newY == grassArr[i].y) {
+                        grassArr.splice(i, 1);
+                        break;
+                    }
                 }
-            }
-
-            matrix[y][x] = 2
-            matrix[this.y][this.x] = 0
-            
-            this.x = x;
-            this.y = y
-
-            if(this.energy > 50){
-                this.mul()
-                this.energy = 2;
-            }
+             
+        if(this.energy >= 25) {
+            this.mul()
+        }
         }else {
             this.move()
         }
     }
-    move(){
-        let found = this.chooseCell(0);
-        let exact = random(found)
-
-        if (exact){
-            let x = exact[0];
-            let y = exact[1];
-
-            matrix[y][x] = 2
-            matrix[this.y][this.x] = 0
-
-            this.x = x;
-            this.y = y;
-
-            this.energy-2
-
-            if(this.energy < 0){
-                this.die()
-            }
-        }else {
-            this.energy-2
-            if(this.energy < 0){
-                this.die()
-            }
-            else if(matrix[x][y] = 0){
-                this.die()
-            }
-        }
-    }
-    die(){
-        for (let i = 0; i < grassEaterArr.length; i++) {
-            if( grassEaterArr[i].x == this.x && grassEaterArr[i].y == this.y ){
-                grassEaterArr.splice(i, 1)
-            }
-        }
+    die() {
         matrix[this.y][this.x] = 0
+        for (var i in grassEaterArr) {
+            if (this.x == grassEaterArr[i].x && this.y == grassEaterArr[i].y) {
+                grassEaterArr.splice(i, 1);
+                break;
+            }
+        }
     }
 }
